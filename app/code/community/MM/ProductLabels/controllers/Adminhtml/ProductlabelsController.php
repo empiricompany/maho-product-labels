@@ -39,6 +39,8 @@ class MM_ProductLabels_Adminhtml_ProductlabelsController extends Mage_Adminhtml_
                 return;
             }
         }
+        // Saved conditions need the fieldset id: the category and sku choosers break without it.
+        $model->getConditions()->setJsFormObject('rule_conditions_fieldset');
         Mage::register('productlabels_rule', $model);
         $this->_initAction();
         $this->_title($model->getId()

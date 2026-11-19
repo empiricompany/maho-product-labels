@@ -15,8 +15,10 @@ SPDX-License-Identifier: OSL-3.0
     </adminhtml_productlabels_new>
 
     <adminhtml_productlabels_edit>
+        <!-- The category value chooser is a MahoTree: catalog price rules load the same two files. -->
         <reference name="head">
             <action method="addJs"><name>mage/adminhtml/rules.js</name></action>
+            <action method="addJs"><name>maho-tree.js</name></action>
             <action method="addJs"><name>productlabels/conditions.js</name></action>
         </reference>
         <reference name="content">
