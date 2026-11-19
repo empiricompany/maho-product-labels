@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+SPDX-FileCopyrightText: 2026 Empiricompany
+SPDX-License-Identifier: OSL-3.0
+-->
+<layout version="0.1.0">
+    <adminhtml_productlabels_index>
+        <reference name="content">
+            <block type="productlabels/adminhtml_rule" name="productlabels" />
+        </reference>
+    </adminhtml_productlabels_index>
+
+    <adminhtml_productlabels_new>
+        <update handle="adminhtml_productlabels_edit" />
+    </adminhtml_productlabels_new>
+
+    <adminhtml_productlabels_edit>
+        <reference name="head">
+            <action method="addJs"><name>mage/adminhtml/rules.js</name></action>
+            <action method="addJs"><name>productlabels/conditions.js</name></action>
+        </reference>
+        <reference name="content">
+            <block type="productlabels/adminhtml_rule_edit" name="productlabels_edit" />
+        </reference>
+        <reference name="left">
+            <block type="productlabels/adminhtml_rule_edit_tabs" name="productlabels_edit_tabs">
+                <block type="productlabels/adminhtml_rule_edit_tab_general" name="productlabels_tab_general" />
+                <block type="productlabels/adminhtml_rule_edit_tab_conditions" name="productlabels_tab_conditions" />
+                <block type="productlabels/adminhtml_rule_edit_tab_label" name="productlabels_tab_label" />
+                <action method="addTab"><name>general</name><block>productlabels_tab_general</block></action>
+                <action method="addTab"><name>conditions</name><block>productlabels_tab_conditions</block></action>
+                <action method="addTab"><name>label</name><block>productlabels_tab_label</block></action>
+            </block>
+        </reference>
+    </adminhtml_productlabels_edit>
+</layout>

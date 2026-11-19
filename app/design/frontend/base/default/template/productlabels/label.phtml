@@ -1,0 +1,25 @@
+<?php
+/** @var MM_ProductLabels_Block_Label $this */
+$labels = $this->getLabels();
+if ($labels === [] || !$this->getProduct()) {
+    return;
+}
+$inline = $this->isContentOnly();
+?>
+<?php if ($inline): ?>
+<div class="pl-content-labels">
+<?php else: ?>
+<span class="pl-labels">
+<?php endif ?>
+    <?php foreach ($labels as $label): ?>
+        <?php $html = $this->getLabelHtml($label); ?>
+        <?php if ($html === '') {
+            continue;
+        } ?>
+        <span class="<?php echo $this->escapeHtml($this->getLabelCssClass($label)); ?>"<?php echo $this->getLabelStyle($label); ?>><?php echo $html; ?></span>
+    <?php endforeach ?>
+<?php if ($inline): ?>
+</div>
+<?php else: ?>
+</span>
+<?php endif ?>

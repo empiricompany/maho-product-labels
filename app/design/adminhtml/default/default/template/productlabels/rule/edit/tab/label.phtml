@@ -1,0 +1,474 @@
+<?php
+
+/**
+ * SPDX-FileCopyrightText: 2026 Empiricompany
+ * SPDX-License-Identifier: OSL-3.0
+ * @package MM_ProductLabels
+ */
+
+/** @var MM_ProductLabels_Block_Adminhtml_Rule_Edit_Tab_Label $this */
+$helper = Mage::helper('productlabels');
+$lookFieldset = $this->getLookFieldset();
+$configJson = $this->getPreviewConfigJson();
+?>
+<style>
+    .pl-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 1rem;
+        align-items: start;
+    }
+    .pl-main {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        min-width: 0;
+    }
+    .pl-aside {
+        position: sticky;
+        top: .75rem;
+        min-width: 0;
+    }
+    @media (max-width: 1280px) {
+        .pl-layout { grid-template-columns: minmax(0, 1fr); }
+        .pl-aside { position: static; }
+    }
+    .pl-block-title {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin: 0 0 .5rem;
+        font-size: var(--maho-text-lg);
+        color: var(--maho-ink-soft);
+    }
+    .pl-pill {
+        font-size: var(--maho-text-xs);
+        font-weight: 400;
+        text-transform: none;
+        letter-spacing: 0;
+        color: var(--maho-ink-muted);
+        background: var(--maho-surface-sunken);
+        border-radius: 999px;
+        padding: 0 .5rem;
+    }
+    .pl-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: .75rem;
+    }
+    .pl-card {
+        border: 1px solid var(--maho-border);
+        border-radius: var(--maho-radius-md);
+        background: var(--maho-surface-raised);
+        padding: .75rem;
+        min-width: 0;
+    }
+    .pl-card.is-filled {
+        border-color: var(--maho-accent);
+        box-shadow: inset 3px 0 0 var(--maho-accent);
+    }
+    .pl-card-head {
+        display: flex;
+        align-items: baseline;
+        gap: .4rem;
+        margin-bottom: .5rem;
+        padding-bottom: .4rem;
+        border-bottom: 1px dashed var(--maho-border-soft);
+    }
+    .pl-card-name {
+        font-weight: 600;
+        font-size: var(--maho-text-md);
+    }
+    .pl-card-code {
+        font-size: var(--maho-text-xs);
+        color: var(--maho-ink-muted);
+    }
+    .pl-card-state {
+        margin-left: auto;
+        font-size: var(--maho-text-xs);
+        color: var(--maho-ink-muted);
+        white-space: nowrap;
+    }
+    .pl-card.is-filled .pl-card-state {
+        color: var(--maho-accent-strong);
+        font-weight: 600;
+    }
+    .pl-card-thumb {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--maho-surface-sunken);
+        border-radius: 4px;
+        padding: .4rem;
+        margin-bottom: .5rem;
+    }
+    .pl-card-thumb img {
+        max-height: 44px;
+        max-width: 100%;
+    }
+    .pl-card .fieldset {
+        border: 0;
+        background: none;
+        padding: 0;
+    }
+    .pl-card .hor-scroll {
+        overflow: visible;
+    }
+    .pl-card .form-list,
+    .pl-card .form-list tbody,
+    .pl-card .form-list tr,
+    .pl-card .form-list td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .pl-card .form-list tr {
+        margin-bottom: .6rem;
+    }
+    .pl-card .form-list tr:last-child {
+        margin-bottom: 0;
+    }
+    .pl-card .form-list td.label label {
+        display: block;
+        margin-bottom: .15rem;
+        font-size: var(--maho-text-sm);
+    }
+    .pl-card .form-list td.value input.input-text,
+    .pl-card .form-list td.value input[type="file"],
+    .pl-card .form-list td.value select,
+    .pl-card .form-list td.value textarea {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .pl-card .form-list td.value p.note {
+        margin-top: .15rem;
+    }
+    .pl-preview {
+        border: 1px solid var(--maho-border);
+        border-radius: var(--maho-radius-md);
+        background: var(--maho-surface-raised);
+        padding: .75rem;
+    }
+    .pl-preview-title {
+        display: block;
+        font-weight: 600;
+        margin-bottom: .5rem;
+    }
+    .pl-preview-store {
+        margin-bottom: .75rem;
+    }
+    .pl-preview-store select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .pl-tile {
+        border: 1px solid var(--maho-border-soft);
+        border-radius: var(--maho-radius-md);
+        overflow: hidden;
+        background: var(--maho-surface);
+    }
+    .pl-tile-media {
+        position: relative;
+        aspect-ratio: 4 / 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+            repeating-linear-gradient(45deg, var(--maho-surface-sunken) 0 10px, transparent 10px 20px);
+        color: var(--maho-ink-faint);
+        font-size: var(--maho-text-xs);
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+    .pl-tile-body {
+        display: flex;
+        flex-direction: column;
+        gap: .15rem;
+        padding: .5rem .6rem .7rem;
+    }
+    .pl-tile-name {
+        font-weight: 600;
+        font-size: var(--maho-text-md);
+    }
+    .pl-tile-price {
+        font-size: var(--maho-text-sm);
+        color: var(--maho-ink-muted);
+    }
+    .pl-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 80%;
+        padding: .3em .55em;
+        border-radius: .25rem;
+        font-size: .75rem;
+        font-weight: 700;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+    .pl-badge--top-left { position: absolute; top: .5rem; left: .5rem; }
+    .pl-badge--top-right { position: absolute; top: .5rem; right: .5rem; }
+    .pl-badge--bottom-left { position: absolute; bottom: .5rem; left: .5rem; }
+    .pl-badge--bottom-right { position: absolute; bottom: .5rem; right: .5rem; }
+    .pl-badge--center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .pl-badge--content { position: static; align-self: flex-start; }
+    .pl-badge-text {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .pl-badge-img {
+        display: block;
+        max-height: 64px;
+        max-width: 100%;
+    }
+    .pl-badge-text[hidden],
+    .pl-badge-img[hidden] {
+        display: none;
+    }
+    .pl-preview-meta,
+    .pl-preview-hint {
+        margin-top: .6rem;
+        font-size: var(--maho-text-xs);
+        color: var(--maho-ink-muted);
+    }
+</style>
+<div class="pl-layout">
+    <div class="pl-main">
+        <section class="pl-block pl-block--look">
+            <?php if ($lookFieldset): ?>
+                <?= $lookFieldset->toHtml() ?>
+            <?php endif ?>
+        </section>
+        <?php foreach ($this->getGroups() as $group): ?>
+            <section class="pl-block">
+                <?php if ($group['show_title']): ?>
+                    <h5 class="pl-block-title">
+                        <span><?= $this->escapeHtml($group['legend']) ?></span>
+                        <?php if ($group['code'] !== ''): ?>
+                            <span class="pl-pill"><?= $this->escapeHtml($group['code']) ?></span>
+                        <?php endif ?>
+                    </h5>
+                <?php endif ?>
+                <div class="pl-cards">
+                    <?php foreach ($group['cards'] as $storeId => $card): ?>
+                        <?php $imageUrl = $this->getImageUrl((string) $card['image']); ?>
+                        <div class="pl-card"
+                             data-store-id="<?= (int) $storeId ?>"
+                             data-image-url="<?= $this->escapeHtml($imageUrl) ?>">
+                            <div class="pl-card-head">
+                                <span class="pl-card-name"><?= $this->escapeHtml((string) $card['legend']) ?></span>
+                                <?php if ((string) $card['code'] !== ''): ?>
+                                    <span class="pl-card-code"><?= $this->escapeHtml((string) $card['code']) ?></span>
+                                <?php endif ?>
+                                <span class="pl-card-state" data-pl-state></span>
+                            </div>
+                            <?php if ($imageUrl !== ''): ?>
+                                <div class="pl-card-thumb">
+                                    <img src="<?= $this->escapeHtml($imageUrl) ?>" alt="">
+                                </div>
+                            <?php endif ?>
+                            <?= $card['fieldset']->toHtml() ?>
+                        </div>
+                    <?php endforeach ?>
+                </div>
+            </section>
+        <?php endforeach ?>
+    </div>
+    <aside class="pl-aside">
+        <div class="pl-preview">
+            <span class="pl-preview-title"><?= $helper->__('Live Preview') ?></span>
+            <div class="pl-preview-store">
+                <select id="pl-preview-store" title="<?= $this->quoteEscape($helper->__('Preview store view')) ?>">
+                    <?php foreach ($this->getPreviewStores() as $storeId => $label): ?>
+                        <option value="<?= (int) $storeId ?>"><?= $this->escapeHtml($label) ?></option>
+                    <?php endforeach ?>
+                </select>
+            </div>
+            <div class="pl-tile">
+                <div class="pl-tile-media" id="pl-tile-media">
+                    <span><?= $helper->__('Product image') ?></span>
+                    <span class="pl-badge pl-badge--top-left" id="pl-badge">
+                        <span class="pl-badge-text" id="pl-badge-text"></span>
+                        <img class="pl-badge-img" id="pl-badge-img" alt="" hidden>
+                    </span>
+                </div>
+                <div class="pl-tile-body" id="pl-tile-body">
+                    <span class="pl-tile-name"><?= $helper->__('Product name') ?></span>
+                    <span class="pl-tile-price"><?= $helper->__('Price') ?></span>
+                </div>
+            </div>
+            <p class="pl-preview-meta" id="pl-preview-meta"></p>
+            <p class="pl-preview-hint"><?= $helper->__('Placeholders are resolved on the storefront.') ?></p>
+        </div>
+    </aside>
+</div>
+<script>
+(function () {
+    'use strict';
+    var config = <?= $configJson ?>;
+    var layout = document.querySelector('.pl-layout');
+    var storeSelect = document.getElementById('pl-preview-store');
+    var badge = document.getElementById('pl-badge');
+    var badgeText = document.getElementById('pl-badge-text');
+    var badgeImage = document.getElementById('pl-badge-img');
+    var media = document.getElementById('pl-tile-media');
+    var body = document.getElementById('pl-tile-body');
+    var meta = document.getElementById('pl-preview-meta');
+    if (!layout || !badge || !storeSelect) {
+        return;
+    }
+
+    var currentStore = storeSelect.value;
+    var objectUrls = {};
+
+    function getCard(storeId) {
+        return layout.querySelector('.pl-card[data-store-id="' + storeId + '"]');
+    }
+
+    function getField(id) {
+        return document.getElementById('pl_' + id);
+    }
+
+    function getImage(card) {
+        var file = card.querySelector('input[type="file"]');
+        if (file && file.files && file.files.length > 0) {
+            var selected = file.files[0];
+            var key = card.getAttribute('data-store-id') + '|' + selected.name + '|' + selected.size;
+            if (!objectUrls[key]) {
+                objectUrls[key] = URL.createObjectURL(selected);
+            }
+            return objectUrls[key];
+        }
+        var remove = card.querySelector('input[type="checkbox"]');
+        if (remove && remove.checked) {
+            return '';
+        }
+        return card.getAttribute('data-image-url') || '';
+    }
+
+    function refreshState(card) {
+        var text = card.querySelector('input[type="text"]');
+        var state = card.querySelector('[data-pl-state]');
+        var filled = (text && text.value.trim() !== '') || getImage(card) !== '';
+        card.classList.toggle('is-filled', filled);
+        if (state) {
+            state.textContent = filled ? config.edited : config.empty;
+        }
+        return filled;
+    }
+
+    function refresh() {
+        var card = getCard(currentStore);
+        if (!card) {
+            return;
+        }
+        var text = card.querySelector('input[type="text"]');
+        var value = text ? text.value : '';
+        var image = getImage(card);
+        var empty = image === '' && value === '';
+
+        badgeImage.hidden = image === '';
+        if (image !== '') {
+            badgeImage.src = image;
+        }
+        badgeText.hidden = image !== '';
+        badgeText.textContent = value === '' ? config.placeholder : value;
+
+        var fg = getField('text_color');
+        var bg = getField('bg_color');
+        var position = getField('position');
+        if (image !== '' || empty) {
+            // An image label ignores the rule colors, and an empty one shows a placeholder only.
+            badge.style.color = image !== '' ? '' : 'var(--maho-ink-muted)';
+            badge.style.backgroundColor = 'transparent';
+            badge.style.border = image !== '' ? '0' : '1px dashed currentColor';
+            badge.style.padding = image !== '' ? '0' : '';
+        } else {
+            badge.style.color = fg && fg.value ? fg.value : '#ffffff';
+            badge.style.backgroundColor = bg && bg.value ? bg.value : '#111827';
+            badge.style.border = '0';
+            badge.style.padding = '';
+        }
+
+        var positionValue = position && position.value ? position.value : 'top-left';
+        badge.className = 'pl-badge pl-badge--' + positionValue;
+        (positionValue === 'content' ? body : media).appendChild(badge);
+
+        var positionLabel = position && position.selectedIndex >= 0
+            ? position.options[position.selectedIndex].text
+            : '';
+        var colors = [];
+        if (image === '' && fg && fg.value) {
+            colors.push(config.textColor + ' ' + fg.value);
+        }
+        if (image === '' && bg && bg.value) {
+            colors.push(config.bgColor + ' ' + bg.value);
+        }
+        meta.textContent = [positionLabel].concat(colors).filter(Boolean).join(' · ')
+            + (image !== '' ? ' · ' + config.imageHint : '');
+
+        refreshState(card);
+    }
+
+    function focusCard(card) {
+        currentStore = card.getAttribute('data-store-id');
+        storeSelect.value = currentStore;
+        refresh();
+    }
+
+    layout.addEventListener('focusin', function (event) {
+        var card = event.target.closest('.pl-card');
+        if (card) {
+            focusCard(card);
+        }
+    });
+
+    layout.addEventListener('input', function (event) {
+        var card = event.target.closest('.pl-card');
+        if (card) {
+            focusCard(card);
+            return;
+        }
+        refresh();
+    });
+
+    layout.addEventListener('change', function (event) {
+        var card = event.target.closest('.pl-card');
+        if (!card) {
+            refresh();
+            return;
+        }
+        var file = card.querySelector('input[type="file"]');
+        var remove = card.querySelector('input[type="checkbox"]');
+        if (event.target === remove && remove.checked && file) {
+            // The stored image is dropped, so a file still sitting in the picker would win on save.
+            file.value = '';
+        }
+        if (event.target === file && file.files && file.files.length > 0 && remove) {
+            // An uploaded file replaces the stored image: "remove" stops applying.
+            remove.checked = false;
+        }
+        focusCard(card);
+    });
+
+    storeSelect.addEventListener('change', function () {
+        currentStore = storeSelect.value;
+        refresh();
+    });
+
+    var cards = layout.querySelectorAll('.pl-card');
+    var filledCard = null;
+    Array.prototype.forEach.call(cards, function (card) {
+        if (refreshState(card) && !filledCard) {
+            filledCard = card;
+        }
+    });
+    if (filledCard) {
+        currentStore = filledCard.getAttribute('data-store-id');
+        storeSelect.value = currentStore;
+    }
+    refresh();
+})();
+</script>

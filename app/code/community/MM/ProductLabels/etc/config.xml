@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <MM_ProductLabels>
+            <version>1.0.0</version>
+        </MM_ProductLabels>
+    </modules>
+
+    <global>
+        <models>
+            <productlabels>
+                <class>MM_ProductLabels_Model</class>
+                <resourceModel>productlabels_resource</resourceModel>
+            </productlabels>
+            <productlabels_resource>
+                <class>MM_ProductLabels_Model_Resource</class>
+                <entities>
+                    <rule>
+                        <table>productlabels_rule</table>
+                    </rule>
+                    <rule_text>
+                        <table>productlabels_rule_text</table>
+                    </rule_text>
+                    <rule_website>
+                        <table>productlabels_rule_website</table>
+                    </rule_website>
+                    <rule_store>
+                        <table>productlabels_rule_store</table>
+                    </rule_store>
+                    <rule_customer_group>
+                        <table>productlabels_rule_customer_group</table>
+                    </rule_customer_group>
+                    <index>
+                        <table>productlabels_index</table>
+                    </index>
+                </entities>
+            </productlabels_resource>
+        </models>
+
+        <blocks>
+            <productlabels>
+                <class>MM_ProductLabels_Block</class>
+            </productlabels>
+        </blocks>
+
+        <helpers>
+            <productlabels>
+                <class>MM_ProductLabels_Helper</class>
+            </productlabels>
+        </helpers>
+
+        <resources>
+            <productlabels_setup>
+                <setup>
+                    <module>MM_ProductLabels</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </productlabels_setup>
+        </resources>
+
+        <index>
+            <indexer>
+                <productlabels>
+                    <model>productlabels/indexer_product</model>
+                </productlabels>
+            </indexer>
+        </index>
+    </global>
+
+    <frontend>
+        <layout>
+            <updates>
+                <productlabels>
+                    <file>productlabels.xml</file>
+                </productlabels>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <MM_ProductLabels>
+                    <files>
+                        <default>MM_ProductLabels.csv</default>
+                    </files>
+                </MM_ProductLabels>
+            </modules>
+        </translate>
+    </frontend>
+
+    <adminhtml>
+        <layout>
+            <updates>
+                <productlabels>
+                    <file>productlabels.xml</file>
+                </productlabels>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <MM_ProductLabels>
+                    <files>
+                        <default>MM_ProductLabels.csv</default>
+                    </files>
+                </MM_ProductLabels>
+            </modules>
+        </translate>
+    </adminhtml>
+
+    <default>
+        <productlabels>
+            <general>
+                <enabled>1</enabled>
+            </general>
+        </productlabels>
+    </default>
+</config>

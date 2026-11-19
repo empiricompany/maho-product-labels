@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <catalog>
+            <children>
+                <productlabels translate="title" module="productlabels">
+                    <title>Product Labels</title>
+                    <sort_order>95</sort_order>
+                    <action>adminhtml/productlabels/index</action>
+                </productlabels>
+            </children>
+        </catalog>
+    </menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <catalog>
+                        <children>
+                            <productlabels translate="title" module="productlabels">
+                                <title>Product Labels</title>
+                                <sort_order>95</sort_order>
+                                <children>
+                                    <manage translate="title" module="productlabels">
+                                        <title>Manage Product Labels</title>
+                                    </manage>
+                                </children>
+                            </productlabels>
+                        </children>
+                    </catalog>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <productlabels translate="title" module="productlabels">
+                                        <title>Product Labels Configuration</title>
+                                    </productlabels>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

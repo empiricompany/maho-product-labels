@@ -1,0 +1,44 @@
+{
+    "name": "empiricompany/maho-product-labels",
+    "description": "Rule-driven product labels (badges) for category listings, product pages, widgets and carousels",
+    "license": "OSL-3.0",
+    "type": "maho-module",
+    "require": {
+        "php": ">=8.5"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "*",
+        "mahocommerce/maho": "dev-main",
+        "mahocommerce/maho-phpstan-plugin": "*",
+        "phpstan/phpstan": "*",
+        "phpstan/phpstan-deprecation-rules": "*",
+        "phpstan/phpstan-strict-rules": "*",
+        "rector/rector": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "MahoCLI\\Commands\\": "lib/MahoCLI/Commands/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "mahocommerce/maho-composer-plugin": true
+        },
+        "platform": {
+            "php": "8.5.12"
+        }
+    },
+    "scripts": {
+        "cs": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "vendor/bin/php-cs-fixer fix",
+        "phpstan": "vendor/bin/phpstan analyse",
+        "rector": "vendor/bin/rector --dry-run",
+        "check": [
+            "@cs",
+            "@phpstan",
+            "@rector"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
