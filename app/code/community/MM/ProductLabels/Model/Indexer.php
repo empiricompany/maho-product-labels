@@ -125,11 +125,12 @@ final class MM_ProductLabels_Model_Indexer
     {
         try {
             $adapter = $this->_getWriteAdapter();
+            // index_process has no updated_at column: the end of a run is ended_at.
             $adapter->update(
                 (string) Mage::getSingleton('core/resource')->getTableName('index/process'),
                 [
                     'status' => 'valid',
-                    'updated_at' => Mage::app()->getLocale()->formatDateForDb('now'),
+                    'ended_at' => Mage::app()->getLocale()->formatDateForDb('now'),
                 ],
                 $adapter->quoteInto('indexer_code = ?', 'productlabels'),
             );
