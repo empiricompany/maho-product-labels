@@ -4,7 +4,7 @@ Rule-driven product labels (badges) for category listings, product pages, widget
 carousels. One rule defines the condition and the look; the label then appears the same
 everywhere.
 
-## How it works
+## What it does
 
 - **Rules** use the framework rule engine and the catalog price rule condition widget, so
   the admin screen is the one you already know. Website and customer group selectors behave
@@ -18,17 +18,63 @@ everywhere.
   (`price`, `final_price`, stock quantity, attributes), so pages stay cacheable. Dates can
   also be relative to today (`is on or after today`, `is on or before today` with a day
   offset): those are resolved by the nightly index rebuild, never per request.
+- **A read-only grid** in the rule shows the products it labels, with the fields of the
+  product grid, so you can check the result before and after a rebuild.
 
-## Install
+## Requirements
+
+- PHP >= 8.5
+- Maho Commerce
+
+## Installation
 
 ```sh
 composer require empiricompany/maho-product-labels
 ./maho migrate
 ```
 
-Enable the module in *Stores → Configuration → Catalog → Product Labels*.
+Enable the module in *Stores → Configuration → Catalog → Product Labels*, then fill the
+index once:
 
-## Use it in a template
+```sh
+./maho productlabels:reindex
+```
+
+## Configuration
+
+A rule has four tabs.
+
+| Tab | Contents |
+| --- | --- |
+| General | name, code, status, position, colors, websites, customer groups, validity dates, priority |
+| Conditions | the rule conditions, with the same widget as the catalog price rules |
+| Label | one card per store view, grouped by website: text, image, colors and a live preview that stays visible while scrolling |
+| Products | read-only grid of the products the rule labels, taken from the index |
+
+The *Products* grid shows the columns of *Catalog → Manage Products*.
+
+| Column | Field |
+| --- | --- |
+| ID | `entity_id` |
+| Name | `name` |
+| Type | `type_id` |
+| Attrib. Set Name | `attribute_set_id` |
+| SKU | `sku` |
+| Price | `price`, in the base currency |
+| Qty | stock quantity |
+| Visibility | `visibility`, as icons |
+| Status | `status`, as icons |
+| Websites | the websites of the product |
+
+Every column has its filter and the grid pages through the results; there is no edit action.
+
+The grid reads the index, so it has no row until the rule is saved or indexed. A product that
+is not visible individually never appears in a listing or on its own page, so the indexer skips
+it: its label would never be printed.
+
+## Usage
+
+### In a template
 
 ```php
 <?= $this->helper('productlabels')->render($_product) ?>
@@ -41,10 +87,20 @@ Place it inside an element with `position: relative` (the module ships the
 <?= $this->helper('productlabels')->render(Mage::registry('current_product')) ?>
 ```
 
+A label with position `content` does not belong to the image overlay: it goes in the text block
+of the card, through a second call. Add it after the price, in both view modes:
+
+```php
+<?= $this->helper('productlabels')->renderContent($_product) ?>
+```
+
+`render()` prints every position but `content`; `renderContent()` prints only `content`, inside a
+flex wrapper so several labels sit on one line.
+
 For custom code, `Mage::helper('productlabels')->getLabels($product)` returns the resolved
 label data.
 
-## Placeholders
+### Placeholders
 
 | Placeholder | Value |
 | --- | --- |
@@ -71,7 +127,7 @@ empty removes the label instead of printing an empty badge.
 The value is read from the store the rule is evaluated on (see the note below), not from the
 store view the customer is browsing.
 
-## Use cases
+### Use cases
 
 Conditions are the catalog price rule ones, with two extra operators for date attributes:
 `is on or after today` and `is on or before today`, whose value is a day offset
@@ -104,7 +160,7 @@ Notes:
   attributes), but `{qty}` is available as a text placeholder: a rule such as
   `Material is Cotton` with the text `Only {qty} left` prints the quantity at the last rebuild.
 
-### Example: a new-arrivals label that maintains itself
+#### Example: a new-arrivals label that maintains itself
 
 1. Create a rule, name it `New arrivals`, position `Top Left`, text color `#ffffff`,
    background `#0ea5e9`.
@@ -116,7 +172,7 @@ Notes:
 4. Nothing else: the nightly rebuild adds the label when a product enters its new window and
    removes it when the window closes.
 
-### Example: print the value of a product attribute
+#### Example: print the value of a product attribute
 
 1. Rule `Material badge`, position `Top Right`, background `#111827`.
 2. Conditions: `Material is Cotton` (or drop the condition to label every product).
@@ -126,7 +182,7 @@ The placeholder is formatted by the attribute frontend, so a select attribute pr
 option label (`Cotton`), not the stored id; a multiselect prints every label, a boolean
 prints `Yes`/`No`, a price attribute prints the value with the store currency.
 
-## Index
+### Index
 
 ```sh
 ./maho productlabels:reindex              # all rules
@@ -149,24 +205,9 @@ The rule colors are mapped onto the badge variables (`--badge-bg`, `--badge-fg`,
 `--badge-color`) from `--pl-bg` and `--pl-fg`, with the theme tokens as fallback
 (`--color-error`, `--color-error-content`) and then fixed values.
 
-The template that renders the products must call the helper inside the image link:
+The module styles the base theme list too, but it cannot add the template calls: a theme that does
+not call the helper has no labels and no error.
 
-```php
-<a href="..." class="product-image">
-    <img ...>
-    <?= $this->helper('productlabels')->render($_product) ?>
-</a>
-```
+## License
 
-A label with position `content` does not belong to the image overlay: it goes in the text block of
-the card, through a second call. Add it after the price, in both view modes:
-
-```php
-<?= $this->helper('productlabels')->renderContent($_product) ?>
-```
-
-`render()` prints every position but `content`; `renderContent()` prints only `content`, inside a
-flex wrapper so several labels sit on one line.
-
-The module styles the base theme list too, but it cannot add those lines: a theme that does not
-call the helper has no labels and no error.
+Open Software License 3.0 (OSL-3.0). See [`LICENSE.txt`](LICENSE.txt).

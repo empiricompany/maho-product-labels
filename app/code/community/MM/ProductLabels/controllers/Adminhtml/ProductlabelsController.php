@@ -154,6 +154,24 @@ class MM_ProductLabels_Adminhtml_ProductlabelsController extends Mage_Adminhtml_
     }
 
     /**
+     * The products grid of the tab, reloaded by AJAX when the user filters or pages.
+     */
+    #[Maho\Config\Route('/admin/productlabels/productsGrid')]
+    public function productsGridAction(): void
+    {
+        $rule = Mage::getModel('productlabels/rule');
+        $ruleId = (int) $this->getRequest()->getParam('rule_id');
+        if ($ruleId > 0) {
+            $rule->load($ruleId);
+        }
+        Mage::register('productlabels_rule', $rule);
+        $this->_initAction();
+        $this->getResponse()->setBody(
+            $this->getLayout()->createBlock('productlabels/adminhtml_rule_edit_tab_products_grid')->toHtml(),
+        );
+    }
+
+    /**
      * @return $this
      */
     protected function _initAction(): static
