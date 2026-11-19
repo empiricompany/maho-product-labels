@@ -70,6 +70,12 @@ class MM_ProductLabels_Model_Rule extends Mage_Rule_Model_Abstract
             if ($this->getWebsiteIds() !== []) {
                 $productCollection->addWebsiteFilter($this->getWebsiteIds());
             }
+            // A product that is not visible individually never appears in a listing or on its
+            // own page, so its label would never be printed: keep it out of the index.
+            $productCollection->addAttributeToFilter(
+                'visibility',
+                ['gt' => Mage_Catalog_Model_Product_Visibility::VISIBILITY_NOT_VISIBLE],
+            );
             if ($this->_productsFilter !== null && $this->_productsFilter !== []) {
                 $productCollection->addIdFilter($this->_productsFilter);
             }
