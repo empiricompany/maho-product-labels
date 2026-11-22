@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 class MM_ProductLabels_Adminhtml_ProductlabelsController extends Mage_Adminhtml_Controller_Action
 {
-    public const ADMIN_RESOURCE = 'catalog/productlabels/manage';
+    public const string ADMIN_RESOURCE = 'catalog/productlabels/manage';
 
     #[Maho\Config\Route('/admin/productlabels/index')]
     public function indexAction(): void
