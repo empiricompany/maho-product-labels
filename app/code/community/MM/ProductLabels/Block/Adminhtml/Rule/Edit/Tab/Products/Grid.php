@@ -213,9 +213,12 @@ class MM_ProductLabels_Block_Adminhtml_Rule_Edit_Tab_Products_Grid extends Mage_
         return $this->getUrl('*/*/productsGrid', ['_current' => true]);
     }
 
+    /**
+     * Read-only grid: '#' is how the core grid template marks a row with no link.
+     */
     #[\Override]
-    public function getRowUrl($row): ?string
+    public function getRowUrl($row): string
     {
-        return null;
+        return '#';
     }
 }

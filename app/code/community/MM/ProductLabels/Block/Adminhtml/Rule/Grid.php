@@ -78,7 +78,7 @@ class MM_ProductLabels_Block_Adminhtml_Rule_Grid extends Mage_Adminhtml_Block_Wi
     }
 
     #[\Override]
-    public function getRowUrl($row)
+    public function getRowUrl($row): string
     {
         return $this->getUrl('*/*/edit', ['rule_id' => $row->getId()]);
     }
