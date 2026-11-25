@@ -196,7 +196,7 @@ class MM_ProductLabels_Block_Adminhtml_Rule_Edit_Tab_Products_Grid extends Mage_
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int|string, string>
      */
     private function _getAttributeSetOptions(): array
     {

@@ -52,7 +52,15 @@ class MM_ProductLabels_Model_Rule_Condition_Product extends Mage_CatalogRule_Mod
             if (!$attribute->isAllowedForRuleCondition()) {
                 continue;
             }
-            $attributes[$attribute->getAttributeCode()] = $attribute->getFrontendLabel();
+            $code = $attribute->getAttributeCode();
+            if (!is_string($code) || $code === '') {
+                continue;
+            }
+            $label = $attribute->getFrontendLabel();
+            if (is_array($label)) {
+                $label = reset($label);
+            }
+            $attributes[$code] = (string) $label;
         }
 
         $this->_addSpecialAttributes($attributes);

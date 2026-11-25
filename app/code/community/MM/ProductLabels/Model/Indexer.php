@@ -26,6 +26,9 @@ final class MM_ProductLabels_Model_Indexer
         $activeIds = [];
         $products = 0;
         foreach ($rules as $rule) {
+            if (!$rule instanceof MM_ProductLabels_Model_Rule) {
+                continue;
+            }
             $activeIds[] = (int) $rule->getId();
             $products += $this->reindexRule($rule);
         }
@@ -50,6 +53,9 @@ final class MM_ProductLabels_Model_Indexer
         $rules = Mage::getResourceModel('productlabels/rule_collection')->addActiveFilter();
         $products = 0;
         foreach ($rules as $rule) {
+            if (!$rule instanceof MM_ProductLabels_Model_Rule) {
+                continue;
+            }
             $products += $this->reindexRule($rule, $productIds);
         }
         $this->_markValid();

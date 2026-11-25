@@ -42,3 +42,12 @@ parameters:
             paths:
                 - app/code/community/MM/ProductLabels/Model/Indexer/Product.php
             reportUnmatched: false
+        # The grid overrides leave the parameter untyped on purpose: the released 26.x core
+        # declares getRowUrl($row) and _addColumnFilterToCollection($column) without types, where a
+        # typed parameter would be a fatal, while on dev-main an untyped parameter is wider and
+        # therefore allowed. The return type carries the contract on both lines.
+        -
+            identifier: missingType.parameter
+            paths:
+                - app/code/community/MM/ProductLabels/Block/Adminhtml/Rule/Grid.php
+                - app/code/community/MM/ProductLabels/Block/Adminhtml/Rule/Edit/Tab/Products/Grid.php
